@@ -45,6 +45,15 @@ const PostController = {
         } catch (error) {
             console.error(error)
         }
+    },
+    async delete(req, res) {
+        try {
+            const post = await Post.findByIdAndDelete(req.params._id)
+            res.send({post, message: 'Post delete'})
+        } catch (error) {
+            console.error(error)
+            res.status(500).send({message:'the product could not be removed'})
+        }
     }
 }
 
