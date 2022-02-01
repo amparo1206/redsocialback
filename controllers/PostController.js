@@ -25,6 +25,26 @@ const PostController = {
         } catch (error) {
             console.error(error);
         }
+    },
+    async getPostByName(req, res) {
+        try {
+            const post = await Post.aggregate([{
+                $match: {
+                    name:req.params.name
+                }
+            }])
+            res.send(post)
+        } catch (error) {
+            console.log(error)
+        }
+    },
+    async update(req, res) {
+        try {
+            const post = await Post.findByIdAndUpdate(req.params._id, req.body, { new: true })
+            res.send({ message: "product successfully updated", post });
+        } catch (error) {
+            console.error(error)
+        }
     }
 }
 
