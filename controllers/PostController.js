@@ -41,7 +41,7 @@ const PostController = {
     async update(req, res) {
         try {
             const post = await Post.findByIdAndUpdate(req.params._id, req.body, { new: true })
-            res.send({ message: "product successfully updated", post });
+            res.send({ message: "post successfully updated", post });
         } catch (error) {
             console.error(error)
         }
