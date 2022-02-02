@@ -26,7 +26,7 @@ const UserController = {
             console.error(error)
             return res.status(500).send({ error, message: 'Unable to log in' })
         }
-    } 
+    },
 };
 
 module.exports = UserController;
