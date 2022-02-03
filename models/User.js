@@ -7,7 +7,7 @@ const UserSchema = new mongoose.Schema({
     password: String,
     age: Number,
     role: String,
-    token: [],
+    tokens: [],
 }, { timestamps: true });
 
 const User = mongoose.model('User', UserSchema);
