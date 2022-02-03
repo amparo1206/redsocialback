@@ -1,5 +1,5 @@
 const User = require('../models/User');
-const jwt = require(jsonwebtoken);
+const jwt = require('jsonwebtoken');
 const { jwt_secret } = require('../config/keys');
 
 const authentication = async (req, res, next) => {
@@ -18,4 +18,17 @@ const authentication = async (req, res, next) => {
     }
 }
 
-module.exports = { authentication }
+const isAuthor = async(req, res, next) => {
+    try {
+        const post = await Post.findById(req.params._id);
+        if (post.userId.toString() !== req.user._id.toString()) { 
+            return res.status(403).send({ message: 'This post is not yours' });
+        }
+        next();
+    } catch (error) {
+        console.error(error)
+        return res.status(500).send({ error, message: 'There was a problem verifying the authorship of the post.' })
+    }
+}
+
+module.exports = { authentication, isAuthor }
