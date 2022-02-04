@@ -1,14 +1,29 @@
 const mongoose = require('mongoose');
 
 
-const UserSchema = new mongoose.Schema({
-    name: String,
-    email: String,
-    password: String,
-    age: Number,
-    role: String,
-    tokens: [],
-}, { timestamps: true });
+const UserSchema = new mongoose.Schema(
+    {
+        name: {
+            type: String,
+            required: [true, "put your name"],
+        },
+
+        email: {
+            type: String,
+            match: [/.+\@.+\..+/, "this e-mail is invalid"],
+            required: [true, "put your email"],
+        },
+        password: {
+            type: String,
+            required: [true, "put your password"]
+        },
+        age: {
+            type: Number,
+            required: [true, "put your age"]
+        },
+        role: String,
+        tokens: [],
+    }, { timestamps: true });
 
 const User = mongoose.model('User', UserSchema);
 

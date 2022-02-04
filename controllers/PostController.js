@@ -7,13 +7,14 @@ const PostController = {
             res.status(201).send(post)
         } catch (error) {
             console.error(error)
-            res.status(500).send({message:'we had a problem creating the post'})
+            res.status(500).send({ message: 'we had a problem creating the post' })
         }
     },
     async getAll(req, res) {
         try {
             const { page = 1, limit = 10 } = req.query;
             const posts = await Post.find()
+                .populate('coments.userId')
                 .limit(limit * 1)
                 .skip((page - 1) * limit);
             res.send(posts)
@@ -33,7 +34,7 @@ const PostController = {
         try {
             const post = await Post.aggregate([{
                 $match: {
-                    name:req.params.name
+                    name: req.params.name
                 }
             }])
             res.send(post)
@@ -51,8 +52,8 @@ const PostController = {
             res.send(post);
         } catch (error) {
             console.error(error)
-                res.status(500).send({message:'There was a problem with the comment'})
-            
+            res.status(500).send({ message: 'There was a problem with the comment' })
+
         }
     },
     async update(req, res) {
@@ -66,10 +67,10 @@ const PostController = {
     async delete(req, res) {
         try {
             const post = await Post.findByIdAndDelete(req.params._id)
-            res.send({post, message: 'Post delete'})
+            res.send({ post, message: 'Post delete' })
         } catch (error) {
             console.error(error)
-            res.status(500).send({message:'the product could not be removed'})
+            res.status(500).send({ message: 'the product could not be removed' })
         }
     }
 }
