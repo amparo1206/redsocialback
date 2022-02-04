@@ -6,10 +6,19 @@ const { jwt_secret } = require('../config/keys');
 const UserController = {
     async register(req, res) {
         try {
-            const user = await User.create(req.body);
+            const user = await User.findOne({
+                email: req.body.email,
+            });
+            if (user) return res.status(400).send("this email is already registered")
+            user = await User.create(req.body);
             res.status(201).send({ message: "User successfully registered", user });
         } catch (error) {
-            console.error(error);
+            console.error(error)
+            if (error.name == 'ValidationError') {
+                const errName = await Objects.keys(error.errors)[0]
+                res.status(400).send(error.errors[errName].message)
+            }
+            res.status(500).send(error)
         }
     },
     async login(req, res) {
