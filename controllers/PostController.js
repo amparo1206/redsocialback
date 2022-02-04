@@ -41,6 +41,20 @@ const PostController = {
             console.log(error)
         }
     },
+    async insertComment(req, res) {
+        try {
+            const post = await Post.findByIdAndUpdate(
+                req.param._id,
+                { $push: { coments: { ...req.body, userId: req.user._id } } },
+                { new: true }
+            );
+            res.send(post);
+        } catch (error) {
+            console.error(error)
+                res.status(500).send({message:'There was a problem with the comment'})
+            
+        }
+    },
     async update(req, res) {
         try {
             const post = await Post.findByIdAndUpdate(req.params._id, req.body, { new: true })
