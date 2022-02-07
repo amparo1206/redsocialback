@@ -6,7 +6,7 @@ const { jwt_secret } = require('../config/keys');
 const UserController = {
     async register(req, res) {
         try {
-            const user = await User.findOne({
+            let user = await User.findOne({
                 email: req.body.email,
             });
             if (user) return res.status(400).send("this email is already registered")
