@@ -37,7 +37,7 @@ const UserController = {
             if (user.tokens.length > 4) user.tokens.shift();
             user.tokens.push(token);
             await user.save();
-            res.send({ message: "Welcome" + user.name, token })
+            res.send({ message: "Welcome " + user.name, token })
         } catch (error) {
             console.error(error)
             return res.status(500).send({ error, message: 'Unable to log in' })
@@ -53,7 +53,15 @@ const UserController = {
             console.error(error);
             res.status(500).send({ message: 'successfully disconnected' })
         }
-    }
+    },
+   /*  async getInfo(req, res) {
+        try {
+            const user = await User.findById(req.user._id)
+            .populate("user")
+        } catch (error) {
+            
+        }
+    } */
 };
 
 module.exports = UserController;
