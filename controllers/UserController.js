@@ -2,7 +2,8 @@ const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 const { jwt_secret } = require('../config/keys');
 const bcrypt = require('bcryptjs');
-const transporter = require ('../config/nodemailer')
+const transporter = require ('../config/nodemailer');
+const { like, disLike } = require("./PostController");
 
 
 
@@ -90,14 +91,17 @@ const UserController = {
         }
       },
     
-   /*  async getInfo(req, res) {
+    async getInfo(req, res) {
         try {
             const user = await User.findById(req.user._id)
-            .populate("user")
+                .populate("postIds")
+                .populate("likes")
+            res.send(user)
         } catch (error) {
-            
+            console.error(error)
+            res.status(500).send({message:'user information could not be retrieved'})
         }
-    } */
+    }
 };
 
 module.exports = UserController;
