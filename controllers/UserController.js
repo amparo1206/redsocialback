@@ -13,7 +13,7 @@ const UserController = {
             });
             if (user) return res.status(400).send("this email is already registered")
             const hash = bcrypt.hashSync(req.body.password, 10)
-            user = await User.create({...req.body,  password: hash });
+            user = await User.create({ ...req.body, password: hash });
             res.status(201).send({ message: "User successfully registered", user });
         } catch (error) {
             console.error(error)
@@ -29,6 +29,10 @@ const UserController = {
             const user = await User.findOne({
                 email: req.body.email
             })
+            const isMatch = await bcrypt.compare(req.body.password, user.password);
+            if (!isMatch) {
+                return res.status(400).send({ message: "Usuario o contraseña incorrectos" })
+            }
             token = jwt.sign({ _id: user._id }, jwt_secret);
             if (user.tokens.length > 4) user.tokens.shift();
             user.tokens.push(token);
