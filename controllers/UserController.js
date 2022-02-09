@@ -2,6 +2,7 @@ const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 const { jwt_secret } = require('../config/keys');
 const bcrypt = require('bcryptjs');
+const transporter = require ('../config/nodemailer')
 
 
 
@@ -31,7 +32,7 @@ const UserController = {
             })
             const isMatch = await bcrypt.compare(req.body.password, user.password);
             if (!isMatch) {
-                return res.status(400).send({ message: "Usuario o contraseña incorrectos" })
+                return res.status(400).send({ message: "Incorrect username or password" })
             }
             token = jwt.sign({ _id: user._id }, jwt_secret);
             if (user.tokens.length > 4) user.tokens.shift();
@@ -54,6 +55,41 @@ const UserController = {
             res.status(500).send({ message: 'successfully disconnected' })
         }
     },
+    async recoverPassword(req, res) {
+        try {
+            const recoverToken = jwt.sign({ email: req.params.email }, jwt_secret, {
+                expiresIn: "48h",
+            });
+            const url = "http://localhost:3000/users/resetPassword/" + recoverToken;
+            await transporter.sendMail({
+                to: req.params.email,
+                subject: "Password recovery",
+                html: `<h3> Password recovery </h3>
+      <a href="${url}">Password recovery</a>
+      Link will expire in 48 hours
+      `,
+            });
+            res.send({
+                message: "A recovery email was sent to your email address.",
+            });
+        } catch (error) {
+            console.error(error);
+        }
+    },
+    async resetPassword(req, res) {
+        try {
+          const recoverToken = req.params.recoverToken;
+          const payload = jwt.verify(recoverToken, jwt_secret);
+          await User.findOneAndUpdate(
+            { email: payload.email },
+            { password: req.body.password }
+          );
+          res.send({ message: "password changed successfully" });
+        } catch (error) {
+          console.error(error);
+        }
+      },
+    
    /*  async getInfo(req, res) {
         try {
             const user = await User.findById(req.user._id)
