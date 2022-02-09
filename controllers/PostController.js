@@ -1,4 +1,5 @@
 const Post = require("../models/Post");
+const User = require("../models/User");
 
 const PostController = {
     async create(req, res) {
@@ -71,6 +72,24 @@ const PostController = {
         } catch (error) {
             console.error(error)
             res.status(500).send({ message: 'the product could not be removed' })
+        }
+    },
+    async like(req, res) {
+        try {
+            const post = await Post.findByIdAndUpdate(
+                req.params._id,
+                { $push: { likes: req.user._id } },
+                { new: true }
+            );
+            await User.findByIdAndUpdate(
+                req.params._id,
+                { $push: { likes: req.params._id } },
+                { new: true }
+            );
+            res.send(post)
+        } catch (erros) {
+            console.error(error);
+            res.status(500).send({message:'there was a problem with your like'})
         }
     }
 }

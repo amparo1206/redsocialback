@@ -23,6 +23,7 @@ const UserSchema = new mongoose.Schema(
         },
         role: String,
         tokens: [],
+        likes: [{type: ObjectId, ref:'Post'}]
     }, { timestamps: true });
 
 const User = mongoose.model('User', UserSchema);
