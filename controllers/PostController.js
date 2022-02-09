@@ -89,7 +89,7 @@ const PostController = {
             res.send(post)
         } catch (erros) {
             console.error(error);
-            res.status(500).send({message:'there was a problem with your like'})
+            res.status(500).send({ message: 'there was a problem with your like' })
         }
     },
     async disLike(req, res) {
@@ -107,9 +107,24 @@ const PostController = {
             res.send(post)
         } catch (erros) {
             console.error(error);
-            res.status(500).send({message:'there was a problem with your like'})
+            res.status(500).send({ message: 'there was a problem with your like' })
         }
     },
+    async getByTitle (req, res) {
+        try {
+            const post = await Post.aggregate([
+                {
+                    $match: {
+                        title: req.params.title,
+                    }
+                }
+            ]);
+            res.send(post)
+        } catch (error) {
+            console.error(error);
+            res.status(500).send({message:'There has been a problem bringing the post by title'})
+        }
+    }
 }
 
 module.exports = PostController;

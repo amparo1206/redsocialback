@@ -12,5 +12,7 @@ router.delete('/:_id', authentication, isAuthor, PostController.delete);
 router.put('/coments/:_id', authentication, PostController.insertComment)
 router.put('/like', PostController.like)
 router.put('/disLike', PostController.disLike)
+router.get('/title', PostController.getByTitle)
+
 
 module.exports = router;

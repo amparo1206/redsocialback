@@ -7,6 +7,6 @@ router.post('/login', UserController.login)
 router.delete('/logout', UserController.logout)
 router.get('/recoverPassowrd/:email', UserController.recoverPassword)
 router.put('/resetPassword', UserController.resetPassword)
-
+router.get('/info', UserController.getInfo)
 
 module.exports = router;
