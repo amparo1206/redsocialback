@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const Post = require('../models/Post')
 const jwt = require('jsonwebtoken');
 const { jwt_secret } = require('../config/keys');
 
@@ -16,7 +17,7 @@ const authentication = async (req, res, next) => {
         console.error(error)
         return res.status(500).send({error, message:"There has been a problem with the token"})
     }
-}
+} 
 
 const isAuthor = async(req, res, next) => {
     try {

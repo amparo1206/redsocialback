@@ -88,7 +88,7 @@ const PostController = {
                 { new: true }
             );
             res.send(post)
-        } catch (erros) {
+        } catch (error) {
             console.error(error);
             res.status(500).send({ message: 'there was a problem with your like' })
         }
