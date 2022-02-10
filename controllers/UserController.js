@@ -3,7 +3,6 @@ const jwt = require("jsonwebtoken");
 const { jwt_secret } = require('../config/keys');
 const bcrypt = require('bcryptjs');
 const transporter = require ('../config/nodemailer');
-const { like, disLike } = require("./PostController");
 
 
 

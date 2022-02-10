@@ -15,7 +15,7 @@ const PostController = {
         try {
             const { page = 1, limit = 10 } = req.query;
             const posts = await Post.find()
-                .populate('coments.userId')
+                .populate('comments.userId')
                 .populate('userId')
                 .limit(limit * 1)
                 .skip((page - 1) * limit);
@@ -32,23 +32,11 @@ const PostController = {
             console.error(error);
         }
     },
-    async getPostByName(req, res) {
-        try {
-            const post = await Post.aggregate([{
-                $match: {
-                    name: req.params.name
-                }
-            }])
-            res.send(post)
-        } catch (error) {
-            console.log(error)
-        }
-    },
     async insertComment(req, res) {
         try {
             const post = await Post.findByIdAndUpdate(
                 req.param._id,
-                { $push: { coments: { ...req.body, userId: req.user._id } } },
+                { $push: { comments: { ...req.body, userId: req.user._id } } },
                 { new: true }
             );
             res.send(post);

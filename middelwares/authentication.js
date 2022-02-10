@@ -22,6 +22,7 @@ const authentication = async (req, res, next) => {
 const isAuthor = async(req, res, next) => {
     try {
         const post = await Post.findById(req.params._id);
+        console.log(post)
         if (post.userId.toString() !== req.user._id.toString()) { 
             return res.status(403).send({ message: 'This post is not yours' });
         }
