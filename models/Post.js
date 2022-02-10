@@ -2,9 +2,9 @@ const mongoose = require('mongoose');
 const ObjectId = mongoose.SchemaTypes.ObjectId;
 
 const PostSchema = new mongoose.Schema({
-    name: String,
-    Title: String,
-    Description: String,
+    userId: { type: ObjectId, ref: 'User' },
+    title: String,
+    description: String,
     image: String,
     coments: [{
         userId: { type: ObjectId, ref: 'User' },

@@ -16,6 +16,14 @@ const UserController = {
             if (user) return res.status(400).send("this email is already registered")
             const hash = bcrypt.hashSync(req.body.password, 10)
             user = await User.create({ ...req.body, password: hash });
+            await transporter.sendMail({
+                to: req.body.email,
+                subject: "Confirme su registro",
+                html: `<h3>Bienvenido, estás a un paso de registrarte </h3>
+                <a href="#"> Click para confirmar tu registro</a>
+                `,
+              });
+        
             res.status(201).send({ message: "User successfully registered", user });
         } catch (error) {
             console.error(error)
