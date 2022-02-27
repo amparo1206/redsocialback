@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const { jwt_secret } = require('../config/keys');
 const bcrypt = require('bcryptjs');
 const transporter = require ('../config/nodemailer');
+const { find } = require("../models/User");
 
 
 
@@ -15,11 +16,13 @@ const UserController = {
             if (user) return res.status(400).send("this email is already registered")
             const hash = bcrypt.hashSync(req.body.password, 10)
             user = await User.create({ ...req.body, password: hash });
+            const emailToken = jwt.sign({ email: req.body.email }, jwt_secret);
+            const url = "http://localhost:3001/users/confirm/" + emailToken;
             await transporter.sendMail({
                 to: req.body.email,
                 subject: "Confirme su registro",
                 html: `<h3>Bienvenido, estás a un paso de registrarte </h3>
-                <a href="#"> Click para confirmar tu registro</a>
+                <a href="${url}"> Click para confirmar tu registro</a>
                 `,
               });
         
@@ -33,6 +36,19 @@ const UserController = {
             res.status(500).send(error)
         }
     },
+    async confirm(req, res) {
+        try {
+          const token = req.params.emailToken;
+          console.log(token);
+          const payload = jwt.verify(token, jwt_secret);
+          const user = await User.findOne({ email: payload.email });
+          user.verified = true;
+          user.save();
+          res.status(201).send({message: "Te has registrado correctamente!"});
+        } catch (error) {
+          console.log(error);
+        }
+      },
     async login(req, res) {
         try {
             const user = await User.findOne({

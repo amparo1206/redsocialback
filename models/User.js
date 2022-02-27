@@ -17,10 +17,6 @@ const UserSchema = new mongoose.Schema(
             type: String,
             required: [true, "put your password"]
         },
-        age: {
-            type: Number,
-            required: [true, "put your age"]
-        },
         role: String,
         tokens: [],
         likes: [{ type: ObjectId, ref: 'Post' }],

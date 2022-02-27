@@ -35,7 +35,7 @@ const PostController = {
     async insertComment(req, res) {
         try {
             const post = await Post.findByIdAndUpdate(
-                req.param._id,
+                req.params._id,
                 { $push: { comments: { ...req.body, userId: req.user._id } } },
                 { new: true }
             );
