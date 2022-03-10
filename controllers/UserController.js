@@ -2,7 +2,7 @@ const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 const { jwt_secret } = require('../config/keys');
 const bcrypt = require('bcryptjs');
-const transporter = require ('../config/nodemailer');
+const transporter = require('../config/nodemailer');
 const { find } = require("../models/User");
 
 
@@ -24,8 +24,8 @@ const UserController = {
                 html: `<h3>Bienvenido, estás a un paso de registrarte </h3>
                 <a href="${url}"> Click para confirmar tu registro</a>
                 `,
-              });
-        
+            });
+
             res.status(201).send({ message: "User successfully registered", user });
         } catch (error) {
             console.error(error)
@@ -38,17 +38,19 @@ const UserController = {
     },
     async confirm(req, res) {
         try {
-          const token = req.params.emailToken;
-          console.log(token);
-          const payload = jwt.verify(token, jwt_secret);
-          const user = await User.findOne({ email: payload.email });
-          user.verified = true;
-          user.save();
-          res.status(201).send({message: "Te has registrado correctamente!"});
+            const token = req.params.emailToken;
+            console.log(token);
+            const payload = jwt.verify(token, jwt_secret);
+            const user = await User.findOne({ email: payload.email });
+            user.verified = true;
+            user.save();
+            res.status(201).send({
+                message: "Te has registrado correctamente!"
+            });
         } catch (error) {
-          console.log(error);
+            console.log(error);
         }
-      },
+    },
     async login(req, res) {
         try {
             const user = await User.findOne({
@@ -62,7 +64,7 @@ const UserController = {
             if (user.tokens.length > 4) user.tokens.shift();
             user.tokens.push(token);
             await user.save();
-            res.send({ message: "Welcome " + user.name, token, user})
+            res.send({ message: "Welcome " + user.name, token, user })
         } catch (error) {
             console.error(error)
             return res.status(500).send({ error, message: 'Unable to log in' })
@@ -102,18 +104,18 @@ const UserController = {
     },
     async resetPassword(req, res) {
         try {
-          const recoverToken = req.params.recoverToken;
-          const payload = jwt.verify(recoverToken, jwt_secret);
-          await User.findOneAndUpdate(
-            { email: payload.email },
-            { password: req.body.password }
-          );
-          res.send({ message: "password changed successfully" });
+            const recoverToken = req.params.recoverToken;
+            const payload = jwt.verify(recoverToken, jwt_secret);
+            await User.findOneAndUpdate(
+                { email: payload.email },
+                { password: req.body.password }
+            );
+            res.send({ message: "password changed successfully" });
         } catch (error) {
-          console.error(error);
+            console.error(error);
         }
-      },
-    
+    },
+
     async getInfo(req, res) {
         try {
             const user = await User.findById(req.user._id)
@@ -122,7 +124,7 @@ const UserController = {
             res.send(user)
         } catch (error) {
             console.error(error)
-            res.status(500).send({message:'user information could not be retrieved'})
+            res.status(500).send({ message: 'user information could not be retrieved' })
         }
     }
 };

@@ -4,7 +4,12 @@ const User = require("../models/User");
 const PostController = {
     async create(req, res) {
         try {
-            const post = await Post.create({ ...req.body,userId:req.user._id })
+            const post = await Post.create({ ...req.body, userId: req.user._id })
+            await User.findByIdAndUpdate(
+                req.user._id,
+                { $push: { postIds: post._id } },
+                { new: true }
+            );
             res.status(201).send(post)
         } catch (error) {
             console.error(error)
@@ -16,7 +21,7 @@ const PostController = {
             const posts = await Post.find()
                 .populate('comments.userId')
                 .populate('userId')
-            res.send(posts)
+            res.send(posts.reverse())
         } catch (error) {
             console.error(error);
         }
@@ -96,19 +101,20 @@ const PostController = {
             res.status(500).send({ message: 'there was a problem with your like' })
         }
     },
-    async getByTitle (req, res) {
+    async getByTitle(req, res) {
+        const title = new RegExp(`${req.params.title}`, 'i')
         try {
-            const post = await Post.aggregate([
+            const posts = await Post.aggregate([
                 {
                     $match: {
-                        title: req.params.title,
+                        title
                     }
                 }
             ]);
-            res.send(post)
+            res.send(posts)
         } catch (error) {
             console.error(error);
-            res.status(500).send({message:'There has been a problem bringing the post by title'})
+            res.status(500).send({ message: 'There has been a problem bringing the post by title' })
         }
     }
 }
